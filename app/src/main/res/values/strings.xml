@@ -1,6 +1,27 @@
 <resources>
     <string name="app_name">oblig1</string>
-    <string name="correct_counter">0/0</string>
-    <string name="add">add</string>
-    <string name="sort">sort</string>
+    <string name="main_title">Quiz App</string>
+    <string name="btn_gallery">Galleri</string>
+    <string name="btn_quiz">Quiz</string>
+    
+    <string name="gallery_title">Galleri</string>
+    <string name="sort_a_z">Sorter A-Å</string>
+    <string name="sort_z_a">Sorter Å-A</string>
+    <string name="add_entry">Legg til</string>
+    <string name="no_entries">Ingen bilder ennå. Trykk \'Legg til\' for å legge til bilder!</string>
+    
+    <string name="add_new_entry">Legg til nytt bilde</string>
+    <string name="enter_name">Skriv inn navn</string>
+    <string name="no_image_selected">Ingen bilde valgt</string>
+    <string name="selected_image">Valgt bilde</string>
+    <string name="select_image_from_gallery">Velg bilde fra galleriet</string>
+    <string name="save_entry">Lagre</string>
+    
+    <string name="quiz_title">Quiz</string>
+    <string name="score_format">Poeng: %1$d / %2$d</string>
+    <string name="need_more_photos">Trenger minst 3 bilder for å kjøre quiz. Legg til flere i galleriet!</string>
+    <string name="quiz_image">Quiz bilde</string>
+    <string name="correct_answer">Riktig! ✓</string>
+    <string name="wrong_answer">Feil! Riktig svar er: %1$s</string>
+    <string name="next_question">Neste spørsmål</string>
 </resources>
