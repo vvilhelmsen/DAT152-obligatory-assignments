@@ -1,4 +1,5 @@
 package com.example.quiz_iteration2
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 @Preview
 fun QuizGreeter() {
+    val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -44,7 +47,9 @@ fun QuizGreeter() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { }
+                onClick = {
+                    context.startActivity(Intent(context, GalleryActivity::class.java))
+                }
             ) {
                 Text(
                     text = stringResource(R.string.quiz),
@@ -52,7 +57,9 @@ fun QuizGreeter() {
                 )
             }
             Button(
-                onClick = { }
+                onClick = {
+                    context.startActivity(Intent(context, GalleryActivity::class.java))
+                }
             ) {
                 Text(
                     text = stringResource(R.string.gallery),
