@@ -1,17 +1,29 @@
 package com.example.oblig1
 
 import android.app.Application
+import com.example.oblig1.data.PhotoDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-// Application class that lives as long as the app is running
 class QuizApplication : Application() {
-    
-    val photoEntries = mutableListOf<PhotoEntry>()
-    
+
     override fun onCreate() {
         super.onCreate()
-        
-        photoEntries.add(PhotoEntry("Katt", R.drawable.cat))
-        photoEntries.add(PhotoEntry("Hund", R.drawable.dog))
-        photoEntries.add(PhotoEntry("Fugl", R.drawable.bird))
+        seedDatabaseIfEmpty()
+    }
+
+    /** Inserts the three built-in entries on the very first launch (when the DB is empty). */
+    private fun seedDatabaseIfEmpty() {
+        val db = PhotoDatabase.getInstance(this)
+        CoroutineScope(Dispatchers.IO).launch {
+            if (db.photoDao().getAllSync().isEmpty()) {
+                val pkg = packageName
+                db.photoDao().insert(PhotoEntry(name = "Katt", imageUri = "android.resource://$pkg/${R.drawable.cat}"))
+                db.photoDao().insert(PhotoEntry(name = "Hund", imageUri = "android.resource://$pkg/${R.drawable.dog}"))
+                db.photoDao().insert(PhotoEntry(name = "Fugl", imageUri = "android.resource://$pkg/${R.drawable.bird}"))
+            }
+        }
     }
 }
+

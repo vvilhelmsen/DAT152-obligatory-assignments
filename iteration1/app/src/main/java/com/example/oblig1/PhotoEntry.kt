@@ -1,9 +1,12 @@
 package com.example.oblig1
 
-// Data class to hold a photo and its associated name
-// Can hold either a resource image (from drawable) or a URI (from phone gallery)
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+/** A name/image pair stored in the Room database. Images are always referenced by URI. */
+@Entity(tableName = "photo_entries")
 data class PhotoEntry(
-    val name: String,           
-    val imageResId: Int = 0,   
-    val imageUri: String? = null 
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val imageUri: String
 )
