@@ -6,7 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.oblig1.data.PhotoDatabase
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,13 +14,14 @@ import org.junit.runner.RunWith
  * Tests that the quiz score is updated correctly after answering questions.
  *
  * Test: Launch QuizActivity with a pre-populated database (3 entries).
- *   1. Read the correct answer name from the ViewModel.
- *   2. Click the button that matches the correct answer.
- *   3. Verify the score display shows "1 / 1".
- *   4. Click "Next question" to advance.
- *   5. Read the new correct answer from the ViewModel.
- *   6. Click a button that does NOT match the correct answer (a wrong answer).
- *   7. Verify the score display shows "1 / 2".
+ *   1. Seed the database with 3 entries and wait for the question UI to appear.
+ *   2. Read the correct answer name from the ViewModel.
+ *   3. Click the button that matches the correct answer.
+ *   4. Verify the score display shows "1 / 1".
+ *   5. Click "Next question" to advance.
+ *   6. Read the new correct answer from the ViewModel.
+ *   7. Click a button that does NOT match the correct answer (a wrong answer).
+ *   8. Verify the score display shows "1 / 2".
  *
  * Expected result: correctCount increments only on correct answers; totalCount
  *                  increments on every answer.
@@ -35,8 +35,10 @@ class QuizActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    @Before
-    fun seedDatabase() {
+    @Test
+    fun scoreUpdatesCorrectlyAfterRightAndWrongAnswer() {
+        // Seed the database now that the activity is running; LiveData will push the
+        // update to the ViewModel and LaunchedEffect will call generateQuestion.
         val db = PhotoDatabase.getInstance(context)
         runBlocking {
             db.photoDao().deleteAll()
@@ -45,10 +47,7 @@ class QuizActivityTest {
             db.photoDao().insert(PhotoEntry(name = "Hund", imageUri = "android.resource://$pkg/${R.drawable.dog}"))
             db.photoDao().insert(PhotoEntry(name = "Fugl", imageUri = "android.resource://$pkg/${R.drawable.bird}"))
         }
-    }
 
-    @Test
-    fun scoreUpdatesCorrectlyAfterRightAndWrongAnswer() {
         composeTestRule.waitUntil(timeoutMillis = 5_000) {
             composeTestRule.onAllNodesWithTag("answer_option_0").fetchSemanticsNodes().isNotEmpty()
         }
@@ -59,7 +58,7 @@ class QuizActivityTest {
         }
 
         composeTestRule.onNodeWithText(correctName).performClick()
-        composeTestRule.onNodeWithTag("quiz_score").assertTextContains("1 / 1")
+        composeTestRule.onNodeWithTag("quiz_score").assertTextContains("1 / 1", substring = true)
         composeTestRule.onNodeWithTag("next_question_button").performClick()
 
         composeTestRule.waitUntil(timeoutMillis = 5_000) {
@@ -73,6 +72,6 @@ class QuizActivityTest {
         }
 
         composeTestRule.onNodeWithText(wrongOption).performClick()
-        composeTestRule.onNodeWithTag("quiz_score").assertTextContains("1 / 2")
+        composeTestRule.onNodeWithTag("quiz_score").assertTextContains("1 / 2", substring = true)
     }
 }

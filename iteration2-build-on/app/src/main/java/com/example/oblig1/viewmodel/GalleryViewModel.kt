@@ -11,7 +11,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
 
     private val dao = PhotoDatabase.getInstance(application).photoDao()
 
-    /** All entries from Room, sorted A-Z. UI observes this and reacts to changes. */
+    /** All entries from Room — UI observes this LiveData and reacts to changes. */
     val entries = dao.getAll()
 
     fun insert(entry: PhotoEntry) {

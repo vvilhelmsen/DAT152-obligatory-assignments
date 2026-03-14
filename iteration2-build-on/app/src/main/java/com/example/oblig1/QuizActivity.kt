@@ -64,9 +64,7 @@ class QuizActivity : ComponentActivity() {
                     modifier = Modifier.testTag("quiz_score")
                 )
 
-                if (entries.size < 3) {
-                    Text(stringResource(R.string.need_more_photos))
-                } else if (viewModel.currentEntry == null) {
+                if (entries.size < 3 || viewModel.currentEntry == null) {
                     Text(stringResource(R.string.need_more_photos))
                 } else {
                     Box(
@@ -117,4 +115,3 @@ class QuizActivity : ComponentActivity() {
         }
     }
 }
-

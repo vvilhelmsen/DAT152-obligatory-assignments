@@ -5,27 +5,21 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
-// Main menu w/ xml
+// Main menu with two buttons that navigate to the Gallery and Quiz activities
 class MainActivity : AppCompatActivity() {
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        
-				// Find gallery button and set up click listener
-        val btnGallery = findViewById<Button>(R.id.btnGallery)
-        btnGallery.setOnClickListener {
-            // start gallery activity
-            val intent = Intent(this, GalleryActivity::class.java)
-            startActivity(intent)
+
+        // Find the Gallery button and start GalleryActivity when clicked
+        findViewById<Button>(R.id.btnGallery).setOnClickListener {
+            startActivity(Intent(this, GalleryActivity::class.java))
         }
-        
-				// Find quiz btn and set up click listener
-        val btnQuiz = findViewById<Button>(R.id.btnQuiz)
-        btnQuiz.setOnClickListener {
-						// start activity
-            val intent = Intent(this, QuizActivity::class.java)
-            startActivity(intent)
+
+        // Find the Quiz button and start QuizActivity when clicked
+        findViewById<Button>(R.id.btnQuiz).setOnClickListener {
+            startActivity(Intent(this, QuizActivity::class.java))
         }
     }
 }

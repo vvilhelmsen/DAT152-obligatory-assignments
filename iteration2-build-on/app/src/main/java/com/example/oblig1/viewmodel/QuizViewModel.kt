@@ -39,13 +39,12 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
         currentEntry = entries.random()
-        val correctName = currentEntry!!.name
         val wrongNames = entries
-            .filter { it.name != correctName }
+            .filter { it.name != currentEntry!!.name }
             .map { it.name }
             .shuffled()
             .take(2)
-        options = (listOf(correctName) + wrongNames).shuffled()
+        options = (listOf(currentEntry!!.name) + wrongNames).shuffled()
         selectedAnswer = null
         showResult = false
     }

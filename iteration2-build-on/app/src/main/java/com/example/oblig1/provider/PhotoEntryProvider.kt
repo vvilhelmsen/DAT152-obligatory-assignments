@@ -30,12 +30,9 @@ class PhotoEntryProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor {
-        val dao = PhotoDatabase.getInstance(context!!).photoDao()
-        val entries = dao.getAllSync()
+        val entries = PhotoDatabase.getInstance(context!!).photoDao().getAllSync()
         val cursor = MatrixCursor(arrayOf(COL_NAME, COL_URI))
-        entries.forEach { entry ->
-            cursor.addRow(arrayOf(entry.name, entry.imageUri))
-        }
+        entries.forEach { cursor.addRow(arrayOf(it.name, it.imageUri)) }
         return cursor
     }
 

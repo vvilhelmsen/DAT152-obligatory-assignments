@@ -4,7 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -41,12 +44,19 @@ class GalleryActivity : ComponentActivity() {
     @Composable
     fun GalleryScreen() {
         val allEntries by viewModel.entries.observeAsState(emptyList())
-
         var isReversed by rememberSaveable { mutableStateOf(false) }
+        var showAddDialog by rememberSaveable { mutableStateOf(false) }
+        val sortedEntries = if (isReversed) allEntries.sortedByDescending { it.name }
+                            else allEntries.sortedBy { it.name }
 
-        val sortedEntries = remember(allEntries, isReversed) {
-            if (isReversed) allEntries.sortedByDescending { it.name }
-            else allEntries.sortedBy { it.name }
+        if (showAddDialog) {
+            AddEntryDialog(
+                onDismiss = { showAddDialog = false },
+                onSave = { name, uri ->
+                    viewModel.insert(PhotoEntry(name = name, imageUri = uri.toString()))
+                    showAddDialog = false
+                }
+            )
         }
 
         Scaffold(
@@ -73,7 +83,7 @@ class GalleryActivity : ComponentActivity() {
                     }
 
                     Button(
-                        onClick = { startActivity(Intent(this@GalleryActivity, AddEntryActivity::class.java)) },
+                        onClick = { showAddDialog = true },
                         modifier = Modifier.testTag("add_entry_button")
                     ) {
                         Text(stringResource(R.string.add_entry))
@@ -120,5 +130,66 @@ class GalleryActivity : ComponentActivity() {
             }
         }
     }
-}
 
+    @Composable
+    fun AddEntryDialog(onDismiss: () -> Unit, onSave: (String, Uri) -> Unit) {
+        var nameText by remember { mutableStateOf("") }
+        var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+        val context = LocalContext.current
+
+        val imagePickerLauncher = rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            if (uri != null) {
+                try {
+                    context.contentResolver.takePersistableUriPermission(
+                        uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (_: SecurityException) { }
+                selectedImageUri = uri
+            }
+        }
+
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text(stringResource(R.string.add_new_entry)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(
+                        value = nameText,
+                        onValueChange = { nameText = it },
+                        label = { Text(stringResource(R.string.enter_name)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("name_field")
+                    )
+                    Button(
+                        onClick = { imagePickerLauncher.launch("image/*") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("select_image_button")
+                    ) {
+                        Text(stringResource(R.string.select_image_from_gallery))
+                    }
+                    if (selectedImageUri != null) {
+                        Text(stringResource(R.string.selected_image))
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { onSave(nameText, selectedImageUri!!) },
+                    enabled = nameText.isNotBlank() && selectedImageUri != null,
+                    modifier = Modifier.testTag("save_button")
+                ) {
+                    Text(stringResource(R.string.save_entry))
+                }
+            },
+            dismissButton = {
+                Button(onClick = onDismiss) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+            }
+        )
+    }
+}

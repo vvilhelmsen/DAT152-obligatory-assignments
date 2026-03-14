@@ -22,13 +22,13 @@ import org.junit.runner.RunWith
  *
  * Test A — Add entry:
  *   1. Start GalleryActivity with 3 pre-seeded entries.
- *   2. Verify 3 name labels are visible in the grid.
+ *   2. Verify 3 items are visible in the grid.
  *   3. Stub the image-picker intent (ACTION_GET_CONTENT) to return the built-in cat drawable URI.
- *   4. Click the "Legg til" button → AddEntryActivity opens.
+ *   4. Click "Legg til" → the add-entry dialog opens inside GalleryActivity.
  *   5. Type "Elefant" into the name field.
  *   6. Click "Select image" → stub fires, cat URI is returned automatically.
- *   7. Click "Save" → AddEntryActivity finishes and control returns to GalleryActivity.
- *   8. Verify 4 name labels are now visible in the grid.
+ *   7. Click "Save" → dialog closes, gallery updates.
+ *   8. Verify 4 items are now visible in the grid.
  * Expected result: Gallery shows 4 entries after a successful add.
  * Implemented by: [addEntryIncreasesCount]
  *

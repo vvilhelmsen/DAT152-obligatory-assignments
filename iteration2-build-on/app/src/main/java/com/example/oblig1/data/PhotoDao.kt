@@ -22,6 +22,7 @@ interface PhotoDao {
     suspend fun delete(entry: PhotoEntry)
 
     /** Removes all rows — used to reset state in tests. */
+    /** Removes all rows — used to reset state in tests. */
     @Query("DELETE FROM photo_entries")
     suspend fun deleteAll()
 }
